@@ -8,7 +8,7 @@
 # Google's Python Class
 # http://code.google.com/edu/languages/google-python-class/
 
-"""
+"""Mimic pyquick exercise -- optional extra exercise.
 Google's Python Class
 
 Read in the file specified on the command line.
@@ -21,12 +21,12 @@ to a list of all the words that immediately follow that word in the file.
 The list of words can be be in any order and should include
 duplicates. So for example the key "and" might have the list
 ["then", "best", "then", "after", ...] listing
-all the words which came after "and" in the text.
-We'll say that the empty string "" is what comes before
-the first word in the file.  This will be the seed string.
+all the words which came after "and" in the chars.
+We'll say that the empty string is what comes before
+the first word in the file.
 
 With the mimic dict, it's fairly easy to emit random
-text that mimics the original. Print a word, then look
+chars that mimics the original. Print a word, then look
 up what words might come next and pick one at random as
 the next word.
 Use the empty string as the first word to prime things.
@@ -46,50 +46,40 @@ columns, so the output looks better.
 import random
 import sys
 
-__author__ = "???"
+__author__ = "Mauricio used google resources and youtube vids for research" 
+
+def mimic_dict(filename):
+  """Returns mimic dict mapping each word to list of words which follow it."""
+  mimic_dict = {}
+  f = open(filename, 'r')
+  chars = f.read()
+  f.close()
+  words = chars.split()
+  copier = ''
+  for word in words:
+    if not copier in mimic_dict:
+        mimic_dict[copier] = mimic_dict.get(copier, []) + [word]
+    copier = word
+  return mimic_dict
 
 
-def create_mimic_dict(filename):
-    """Returns mimic dict mapping each word to list of words which follow it.
-    For example:
-        Input: "I am a software developer, and I don't care who knows"
-        Output:
-            {
-                "" : ["I"],
-                "I" : ["am", "don't"],
-                "am": ["a"],
-                "a": ["software"],
-                "software" : ["developer,"],
-                "developer," : ["and"],
-                "and" : ["I"],
-                "don't" : ["care"],
-                "care" : ["who"],
-                "who" : ["knows"]
-            }
-    """
-    # +++your code here+++
+def print_mimic(mimic_dict, word):
+  """Given mimic dict and start word, prints 200 random words."""
+  for i in range(200):
+    print word,
+    this_copy = mimic_dict.get(word)
+    if not this_copy:
+      this_copy = mimic_dict[''] 
+    word = random.choice(this_copy)
 
-
-def print_mimic(mimic_dict, start_word):
-    """Given a previously compiled mimic_dict and start_word, prints 200 random words:
-        - Print the start_word
-        - Lookup the start_word in your mimic_dict and get it's next-list
-        - Randomly select a new word from the next-list
-        - Repeat this process 200 times
-    """
-    # +++your code here+++
-    pass
-
-
-# Provided main(), calls mimic_dict() and mimic()
 def main():
-    if len(sys.argv) != 2:
-        print 'usage: python mimic.py file-to-read'
-        sys.exit(1)
+  if len(sys.argv) != 2:
+    print 'usage: ./mimic.py --.txt'
+    sys.exit(1)
 
-    d = create_mimic_dict(sys.argv[1])
-    print_mimic(d, '')
+  dict = mimic_dict(sys.argv[1])
+  print_mimic(dict, '')
 
 
 if __name__ == '__main__':
-    main()
+  main()
